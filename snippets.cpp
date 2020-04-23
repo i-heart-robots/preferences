@@ -141,3 +141,80 @@ int main(void) {
 //    - Members of a class are private by default and members of struct are public by default.
 //    - When deriving a struct from a class/struct, default access-specifier for a base class/struct
 //    is public. And when deriving a class, default access specifier is private.
+
+// ----- Problem 9 ------------------------------------------------------------
+// Q. Replace the 'shuffle' function w/ something more 'appropriate'
+#include <algorithm>
+#include <iostream>
+#include <numeric>
+#include <vector>
+
+void shuffle(std::vector<int>& cards) { std::reverse(cards.begin(), cards.end()); }
+
+int main() {
+  std::vector<int> cards(52);
+  std::iota(cards.begin(), cards.end(), 0);
+  for (const auto& card : cards) {
+    std::cout << card << ", ";
+  }
+  std::cout << std::endl;
+  shuffle(cards);
+  for (const auto& card : cards) {
+    std::cout << card << ", ";
+  }
+  return 0;
+}
+
+// OR
+
+// -->
+// Example program
+#include <iostream>
+#include <random>
+#include <string>
+
+void shuffle(int cards[52]) {
+  for (int ii = 0; ii < 52; ++ii) {
+    int random_index = rand() % 52;
+    int tmp = cards[ii];
+    cards[ii] = cards[random_index];
+    cards[random_index] = tmp;
+  }
+}
+
+int main() {
+  // Initialize cards.
+  int cards[52];
+  for (int ii = 0; ii < 52; ++ii) {
+    cards[ii] = ii;
+  }
+
+  // Print initial list.
+  std::cout << "[";
+  for (int ii = 0; ii < 52; ++ii) {
+    std::cout << cards[ii] << ", ";
+  }
+  std::cout << "]" << std::endl;
+
+  // Shuffle the list.
+  shuffle(cards);
+
+  // Print the shuffled list.
+  std::cout << "[";
+  for (int ii = 0; ii < 52; ++ii) {
+    std::cout << cards[ii] << ", ";
+  }
+  std::cout << "]" << std::endl;
+
+  return 0;
+}
+// <--
+
+// ----- Problem 10 ------------------------------------------------------------
+// Q. How many times will this loop execute? Explain your answer.
+// A. Infinite.  An unsigned char will overflow after 255 while (2 * half_limit) will be 'promoted'
+// to an int of value 300 - hence 255 will always be less than 300.
+unsigned char half_limit = 150;
+for (unsigned char i = 0; i < 2 * half_limit; ++i) {
+  // do something;
+}
