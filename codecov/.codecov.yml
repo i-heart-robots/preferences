@@ -1,0 +1,85 @@
+codecov:
+  # strict_yaml_branch
+  # Codecov will always use the current yaml on the branch being tested by default. 
+  # If you would like to restrict changes to the yaml, and always use the yaml 
+  # on a specific branch, you may declare the branch as shown below.
+  #
+  strict_yaml_branch: dev    
+  notify:
+    require_ci_to_pass: yes
+  #
+  # Codecov will use the default branch for your repository as the "master" 
+  # copy of the repositories Codecov Yaml. 
+  # If not otherwise stated, is the master branch. 
+  # You can change the Codecov default branch below.
+  branch: dev
+  max_report_age: off
+
+coverage:
+  # Codecov will round coverage down to the precision point by default.
+  precision: 1 # 1 is XX.X%, 2 is XX.XX%
+  round: down # how coverage is rounded: down/up/nearest
+  # setting the range 
+  # see more here: https://docs.codecov.io/docs/coverage-configuration#section-range
+  range: "20...90"
+
+  status:
+    project: 
+      default: # setting to false allows for multiple projects 
+        #
+        # "target" chooses the min coverage ratio commit must meet to be a success
+        # "pr" will only use the pull request base. 
+        # commits not on a pull request will not receive this status.
+        # see: https://docs.codecov.io/docs/commit-status#section-target
+        target: auto 
+        # 
+        # the target branch to compare against
+        base: pr
+        #
+        # "threshold" allows the coverage to drop by X%, and still post a success status.
+        # In our case, fail the status if coverage drops by >= 0.5%
+        # see: https://docs.codecov.io/docs/commit-status#section-threshold
+        threshold: 0.5
+    patch:
+      default:
+        # the patch compares the current PR with the merge
+        # and checks the code coverage of the PR itself
+        target: auto
+        # adding a threshold to allow us to submit a patche with any coverage level
+        threshold: 0
+        base: pr
+
+
+parsers:
+  gcov:
+    branch_detection:
+      conditional: true
+      loop: true
+      macro: false
+      method: false
+  javascript:
+    enable_partials: false
+
+ignore:
+  - ".clang-format"
+  - ".clang-tidy"
+  - "third-party-code"
+
+comment:
+  layout: "reach, diff, flags, files"
+  #
+  # how "behavior" works
+  #
+  #     default:  update, if exists. Otherwise post new.
+  #     once:     update, if exists. Otherwise post new. Skip if deleted.
+  #     new:      delete old and post new.
+  #     spammy:   post new (do not delete old comments).
+  # 
+  # see for more: https://docs.codecov.io/docs/pull-request-comments#section-behavior
+  #
+  behavior: default
+  #
+  # 
+  require_changes: yes # if true: only post the comment if coverage changes
+  require_base: yes        
+  require_head: yes       

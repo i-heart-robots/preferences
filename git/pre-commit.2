@@ -1,0 +1,36 @@
+#!/bin/bash
+
+#
+# You can disable this hook by adding "--no-verify" to git-commit command.
+#
+
+cd $(git rev-parse --show-toplevel)
+
+#
+# check & correct C++ coding style.
+#
+if ./build/scripts/run-clang-format.sh -f -g; then
+    echo "All C/C++ files are well-formatted."
+else
+    echo "Some files are modified by clang-format. Please try commit again."
+    exit 1
+fi
+
+
+#
+# Update .circle/config.yml if needed.
+#
+for path in $(git diff-index --cached --diff-filter=ACMR --name-only HEAD); do
+    if [[ "$path" =~ \.circleci/.* ]]; then
+        echo "Found changes under .circleci. Checking Circle CI config..."
+        if .circleci/scripts/diff.sh; then
+            break
+        else
+            echo "Circle CI config is out of sync. Updating it..."
+            .circleci/scripts/update.sh
+            exit 1
+        fi
+    fi
+done
+
+exit 0

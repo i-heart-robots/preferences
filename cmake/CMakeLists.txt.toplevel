@@ -1,0 +1,49 @@
+# This file should be included by all project CMakeLists.txt files in kitty_stack
+# It is used to store configuration commands that should be shared across all projects
+cmake_minimum_required(VERSION 3.5.1)
+
+SET(MAIN_WORKSPACE ${CMAKE_CURRENT_LIST_DIR})
+SET(CATKIN_WS_ROOT ${MAIN_WORKSPACE}/../..)
+
+include("${CMAKE_CURRENT_LIST_DIR}/tests/tests.cmake")
+
+# Turn this on for a verbose build
+SET(CMAKE_VERBOSE_MAKEFILE ON)
+
+SET(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# Don't generate EUS, LISP or JS code for messages
+SET(ENV{ROS_LANG_DISABLE} geneus:genlisp:gennodejs)
+
+# Define common CXX flags
+SET(CMAKE_CXX_FLAGS_BASE "${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Wextra")
+
+# By default, treat all warnings as errors. CMAKE_CXX_FLAGS may be overwritten
+# in some packages (typically 3rd party packages) to make it more lenient.
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_BASE} -Werror -Wno-error=deprecated-declarations")
+
+# CLion fails to locate directories containing ROS message header files in some
+# environments even when following the instructions here
+# https://www.jetbrains.com/help/clion/ros-setup-tutorial.html
+#
+# This is a workaround to explicitly tell Clion where to look at.
+# To enable, pass -DCLION=1 to cmake.
+if(CLION)
+  include_directories("${CMAKE_CURRENT_LIST_DIR}/../devel/include")
+endif()
+
+if(APPLE)
+  SET(CMAKE_CXX_COMPILER "clang++")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-register -Wno-address-of-packed-member -Wno-sign-compare")
+  INCLUDE_DIRECTORIES("/usr/local/opt/openssl/include/")
+  LINK_DIRECTORIES("/usr/local/lib" , "/usr/local/Cellar/boost/1.69.0/")
+endif()
+
+include("${CMAKE_CURRENT_LIST_DIR}/config/configuration.cmake")
+
+# Turn on ccache (https://ccache.dev/) if installed for faster builds
+find_program(CCACHE_FOUND ccache)
+if(CCACHE_FOUND)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+endif()

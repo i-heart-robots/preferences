@@ -1,0 +1,10 @@
+#!/bin/bash
+
+#
+# git pre-commit hook to check & correct C++ coding style.
+# To enable this hook, copy this file to .git/hooks/pre-commit (make sure the file has +x permission)
+#
+# You can disable this hook by adding "--no-verify" to git-commit command.
+#
+cd $(git rev-parse --show-toplevel)
+./build/scripts/run-clang-format.sh -f -g

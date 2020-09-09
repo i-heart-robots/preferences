@@ -1,0 +1,14 @@
+#!/bin/bash
+
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+n_slashes=`git rev-parse --abbrev-ref HEAD | grep -c '/'`
+
+if [ $n_slashes -ne 0 ]; then
+    echo -e "${RED}The git branch name contains a slash '/'. Some CI jobs will fail. Please rename the branch.${NC}"
+    exit 1
+fi
+
+
+exit 0
