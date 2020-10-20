@@ -16,3 +16,6 @@ sudo apt-get install powerline fonts-powerline
 
 sudo apt-get install zsh-theme-powerlevel9k
 
+sudo apt install zsh-syntax-highlighting
+
+cd ~/.oh-my-zsh/themes && ln -s /usr/share/powerlevel9k powerlevel9k
